@@ -1,15 +1,40 @@
 # Global arrays
+
 a = []
 b = []
+
+# Stores the current split boundaries
+split_positions = []
+
+
+def display():
+
+    result = ""
+
+    for i in range(1, len(a)):
+
+        result += str(a[i])
+
+        if i in split_positions:
+            result += " | "
+        elif i < len(a) - 1:
+            result += " "
+
+    print(result)
 
 
 def MergeSort(low, high):
 
-    # If there is more than one element
     if low < high:
 
         # Divide P into subproblems
         mid = (low + high) // 2
+
+        # Add the split
+        split_positions.append(mid)
+
+        # Display the split
+        display()
 
         # Solve the subproblems
         MergeSort(low, mid)
@@ -17,6 +42,13 @@ def MergeSort(low, high):
 
         # Combine the solutions
         Merge(low, mid, high)
+
+        # Remove the split after merging
+        if mid in split_positions:
+            split_positions.remove(mid)
+
+        # Display the merged result
+        display()
 
 
 def Merge(low, mid, high):
@@ -42,7 +74,6 @@ def Merge(low, mid, high):
     # if (h > mid)
     if h > mid:
 
-        # for k := j to high
         for k in range(j, high + 1):
             b[i] = a[k]
             i = i + 1
@@ -50,30 +81,43 @@ def Merge(low, mid, high):
     # else
     else:
 
-        # for k := h to mid
         for k in range(h, mid + 1):
             b[i] = a[k]
             i = i + 1
 
-    # for k := low to high
+    # Copy merged elements back
     for k in range(low, high + 1):
         a[k] = b[k]
 
 
+# -------------------------
 # Input
+# -------------------------
+
 print("Enter Size:")
 n = int(input().strip())
 
 print("Enter Elements:")
-
-# Make array 1-indexed
 a = [None] + input().strip().split()
 
 # Auxiliary array
 b = [None] * (n + 1)
 
+
+# -------------------------
 # Merge Sort
+# -------------------------
+
+print("\nMerge Sort Process:")
+
+display()
+
 MergeSort(1, n)
 
-# Output
-print("Sorted array:", *a[1:])
+
+# -------------------------
+# Final Result
+# -------------------------
+
+print("\nSorted array:")
+print(*a[1:])
