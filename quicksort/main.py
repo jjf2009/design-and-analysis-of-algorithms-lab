@@ -10,20 +10,57 @@ def Interchange(a, i, j):
     a[j] = p
 
 
-def display_array(p, q, pivot_index=None, split_index=None):
+def display_array(a, p, q, pivot_index=None, left=None, right=None):
 
     for i in range(1, len(a) - 1):
 
-        # Print pivot in bold
+        # Opening bracket
+        if i == p:
+            print("[", end=" ")
+
+        # Pivot in bold
         if i == pivot_index:
             print("\033[1m" + str(a[i]) + "\033[0m", end=" ")
-
         else:
             print(a[i], end=" ")
 
-        # Print split
-        if i == split_index:
-            print("|", end=" ")
+        # Closing bracket
+        if i == q:
+            print("]", end=" ")
+
+        # Space between elements
+        elif i < len(a) - 2:
+            print(end=" ")
+
+    print()
+
+
+def display_split(a, p, j, q):
+
+    for i in range(1, len(a) - 1):
+
+        # Left subarray
+        if i == p:
+            print("[", end=" ")
+
+        print(a[i], end=" ")
+
+        if i == j - 1:
+            print("]", end=" ")
+
+        # Pivot
+        if i == j:
+            print("\033[1m" + str(a[i]) + "\033[0m", end=" ")
+
+        # Right subarray
+        if i == j + 1:
+            print("[", end=" ")
+
+        if i == q:
+            print("]", end=" ")
+
+        if i < len(a) - 2:
+            print(end=" ")
 
     print()
 
@@ -34,9 +71,9 @@ def Partition(a, m, p):
     i = m
     j = p
 
-    # Display entire array with current pivot in bold
+    # Display current subarray with pivot
     print()
-    display_array(m, p - 1, m)
+    display_array(a, m, p - 1, m)
 
     while True:
 
@@ -63,8 +100,8 @@ def Partition(a, m, p):
     a[m] = a[j]
     a[j] = v
 
-    # Display entire array after partition
-    display_array(m, p - 1, j, j)
+    # Display the two partitions
+    display_split(a, m, j, p - 1)
 
     return j
 
@@ -77,14 +114,16 @@ def QuickSort(a, p, q):
         # Divide P into two subproblems
         j = Partition(a, p, q + 1)
 
-        # Solve the subproblems
+        # Solve left subproblem
         QuickSort(a, p, j - 1)
+
+        # Solve right subproblem
         QuickSort(a, j + 1, q)
 
-        # No combining required
 
-
+# -------------------------
 # Input
+# -------------------------
 
 print("Enter Size:")
 n = int(input().strip())
@@ -95,13 +134,22 @@ a = [None] + input().strip().split()
 # a[n + 1] = infinity
 a.append(float("inf"))
 
+
+# -------------------------
+# Quick Sort
+# -------------------------
+
 print("\nBefore sorting:")
 print(*a[1:n + 1])
 
 print("\nQuick Sort Process:")
 
-# QuickSort starts from index 1
 QuickSort(a, 1, n)
+
+
+# -------------------------
+# Output
+# -------------------------
 
 print("\nAfter sorting:")
 print(*a[1:n + 1])
