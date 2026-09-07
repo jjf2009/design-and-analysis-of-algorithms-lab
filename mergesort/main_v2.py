@@ -10,11 +10,7 @@ import time
 a = []
 b = []
 
-# Stores the current split boundaries
 split_positions = []
-
-# The original implementation displays every recursive state.  Benchmarking
-# disables that output so the measured time represents sorting operations.
 SHOW_PROCESS = False
 
 

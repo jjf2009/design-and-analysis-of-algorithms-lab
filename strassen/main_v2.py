@@ -1,8 +1,5 @@
-"""Benchmark normal matrix multiplication against Strassen multiplication."""
-
 import random
 import time
-
 
 def add_matrix(A, B):
     n = len(A)
@@ -14,7 +11,6 @@ def add_matrix(A, B):
 
     return C
 
-
 def subtract_matrix(A, B):
     n = len(A)
     C = [[0] * n for _ in range(n)]
@@ -25,14 +21,25 @@ def subtract_matrix(A, B):
 
     return C
 
-
 def Strassen(A, B):
 
     n = len(A)
 
-    # Base case
-    if n == 1:
-        return [[A[0][0] * B[0][0]]]
+    if n < 2 or n & (n - 1):
+        raise ValueError("Strassen multiplication requires a power-of-two size of at least 2")
+
+    # Base case: multiply the 2-by-2 matrices directly.
+    if n == 2:
+        return [
+            [
+                A[0][0] * B[0][0] + A[0][1] * B[1][0],
+                A[0][0] * B[0][1] + A[0][1] * B[1][1],
+            ],
+            [
+                A[1][0] * B[0][0] + A[1][1] * B[1][0],
+                A[1][0] * B[0][1] + A[1][1] * B[1][1],
+            ],
+        ]
 
     # Find middle
     mid = n // 2
@@ -180,7 +187,6 @@ def benchmark(datasets, clock):
             "Normal Multiplication": measure(normal_multiply, normal_A, normal_B, clock),
             "Strassen Multiplication": measure(Strassen, strassen_A, strassen_B, clock),
         }
-
     return results
 
 
