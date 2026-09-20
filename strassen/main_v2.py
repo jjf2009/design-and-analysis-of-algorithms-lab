@@ -28,7 +28,6 @@ def Strassen(A, B):
     if n < 2 or n & (n - 1):
         raise ValueError("Strassen multiplication requires a power-of-two size of at least 2")
 
-    # Base case: multiply the 2-by-2 matrices directly.
     if n == 2:
         return [
             [
