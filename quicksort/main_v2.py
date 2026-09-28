@@ -127,10 +127,8 @@ def QuickSort(a, p, q):
         # Divide P into two subproblems
         j = Partition(a, p, q + 1)
 
-        # Solve left subproblem
-        QuickSort(a, p, j - 1)
 
-        # Solve right subproblem
+        QuickSort(a, p, j - 1)
         QuickSort(a, j + 1, q)
 
 
