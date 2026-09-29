@@ -51,3 +51,18 @@ print("\nEdges in the minimum spanning tree:")
 for i in range(1, n):
     print(t[i][0], t[i][1])
 print("Minimum cost:", mincost)
+
+
+cost = [
+    [INF, INF ,INF ,96  ,49   ,81,  47,  92,  12,  10],
+    [INF, INF ,INF ,INF ,31   ,34,  87,  29,  73,  78],
+    [INF, 96  ,INF ,INF ,61   ,50,  65,  64,  79,  73],
+    [INF, 49  ,31  ,61  ,INF  ,INF, 63,  90,  80,  28],
+    [INF, 81  ,34  ,50  ,INF  ,INF, 45,  92,  50,  INF],
+    [INF, 47  ,87  ,65  ,63   ,45,  INF, 52,  29,  42],
+    [INF, 93  ,18  ,88  ,38   ,11,  37,  85,  27,  39],
+    [INF, 92  ,29  ,64  ,90   ,92,  52,  INF, INF, 96],
+    [INF, 92  ,73  ,79  ,80   ,50,  29,  INF, INF, 59],
+    [INF, 98  ,72  ,28  ,INF  ,42,  39,  59,  34,  34],
+    [INF, INF ,INF ,INF]
+]

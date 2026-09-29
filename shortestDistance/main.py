@@ -7,13 +7,17 @@ def print_array(arr, n):
         else:
             result.append(str(arr[i]))
     return "[ " + " ".join(result) + " ]"
+
+
 def ShortestPaths(v, cost, dist, n):
     S = [False] * (n + 1)
+    P = [0]*(n+1)
     for i in range(1, n + 1):
         S[i] = False
+        P[i]=v
         dist[i] = cost[v][i]
     S[v] = True
-    dist[v] = 0.0
+    dist[v] = 0
     print("\nINITIAL")
     print("S    =", print_array(S, n))
     print("DIST =", print_array(dist, n))
@@ -28,24 +32,27 @@ def ShortestPaths(v, cost, dist, n):
         for w in range(1, n + 1):
             if not S[w] and cost[u][w] != INF:
                 if dist[w] > dist[u] + cost[u][w]:
+                    P[w]=u
                     dist[w] = dist[u] + cost[u][w]
 
-        print("\nSTEP", step)
+        print("\nSTEP", num)
         print("u =", u)
-        print("MINCOST =", mincost)
         print("S    =", print_array(S, n))
         print("DIST =", print_array(dist, n))
 
+    print("PATH =",print_array(P,n))    
+
 
 cost = [
-    [INF,  0,   INF,  70,  INF,  INF,  51,  40,  48],
-    [INF, 92,    0,   INF,  20,  13,  14,  34, INF],
-    [INF, INF,  56,    0,   INF,  INF, INF, INF,  46],
-    [INF, 21,   53,   INF,   0,   13,  INF, INF, INF],
-    [INF, INF,  INF,  INF,  74,   0,  INF,  93,  22],
-    [INF, INF,  60,   18,  INF,  INF,   0,  INF,  57],
-    [INF, 72,   54,   55,   82,  INF,  33,   0,  71],
-    [INF, 26,   53,   50,   30,  INF,  43, INF,   0]
+    [INF,INF,INF,INF,INF,INF,INF,INF],
+    [INF,  0,   INF,  INF,  28,  INF,  29,  29,  24],
+    [INF, INF,    0,   14,  30,  27,  INF,  26, INF],
+    [INF, 25,  INF,    0,   31,  23, 17, 28,  17],
+    [INF, 22,   34,   27,   0,   20,  INF, 10, 17],
+    [INF, 15,  INF,  14,  INF,   0,  INF,  INF,  23],
+    [INF, INF,  INF,  INF,  32,  23,   0,  29,  INF],
+    [INF, INF,   32,   32,   13,  22,  11,   0,  23],
+    [INF, 29,   14,   14,   INF,  INF,  INF, INF,   0]
 ]
 
 n = 8
