@@ -1,48 +1,75 @@
+from collections import deque
 INF = float("inf")
-
-
-def MultistageForward(cost, stages, n, stage_of):
-    # cost[i][j] is the edge weight i -> j (INF if no edge). Vertices are
-    # 1-indexed; vertex 1 is the source, vertex n is the sink.
-    bcost = [INF] * (n + 1)
-    d = [0] * (n + 1)
-    bcost[n] = 0
-    for j in range(n - 1, 0, -1):
-        best = INF
-        for r in range(1, n + 1):
-            if cost[j][r] != INF and cost[j][r] + bcost[r] < best:
-                best = cost[j][r] + bcost[r]
-                d[j] = r
-        bcost[j] = best
-    # Reconstruct the minimum-cost path stage by stage.
-    path = [1]
-    v = 1
-    while v != n:
-        v = d[v]
-        path.append(v)
-    return bcost[1], path
-
-
-if __name__ == "__main__":
-    # Classic 5-stage, 12-vertex multistage graph (Horowitz-Sahni).
-    n = 12
-    edges = {
-        (1, 2): 9, (1, 3): 7, (1, 4): 3, (1, 5): 2,
-        (2, 6): 4, (2, 7): 2, (2, 8): 1,
-        (3, 6): 2, (3, 7): 7,
-        (4, 8): 11,
-        (5, 7): 11, (5, 8): 8,
-        (6, 9): 6, (6, 10): 5,
-        (7, 9): 4, (7, 10): 3,
-        (8, 10): 5, (8, 11): 6,
-        (9, 12): 4,
-        (10, 12): 2,
-        (11, 12): 5,
-    }
-    cost = [[INF] * (n + 1) for _ in range(n + 1)]
-    for (u, v), w in edges.items():
-        cost[u][v] = w
-
-    mincost, path = MultistageForward(cost, 5, n, None)
-    print("Minimum cost:", mincost)
-    print("Path:", " -> ".join(map(str, path)))
+V = [1, 2, 3, 4, 5]
+source = 1
+sink = 2
+edges = {
+    (1, 3): 7,
+    (1, 5): 10,
+    (3, 4): 3,
+    (3, 5): 8,
+    (4, 5): 2,
+    (4, 2): 8,
+    (5, 2): 5,
+}
+adj = {v: [] for v in V}
+radj = {v: [] for v in V}
+indeg = {v: 0 for v in V}
+for (u, v), w in edges.items():
+    adj[u].append((v, w))
+    radj[v].append((u, w))
+    indeg[v] += 1
+q = deque([v for v in V if indeg[v] == 0])
+order = []
+deg = dict(indeg)
+while q:
+    u = q.popleft()
+    order.append(u)
+    for v, w in adj[u]:
+        deg[v] -= 1
+        if deg[v] == 0:
+            q.append(v)
+stageno = {v: 1 for v in V}
+for u in order:
+    for v, w in adj[u]:
+        if stageno[u] + 1 > stageno[v]:
+            stageno[v] = stageno[u] + 1
+k = max(stageno.values())
+stages = {}
+for v in V:
+    stages.setdefault(stageno[v], []).append(v)
+cost = {v: INF for v in V}
+d = {v: 0 for v in V}
+cost[sink] = 0
+for u in reversed(order):
+    for v, w in adj[u]:
+        if w + cost[v] < cost[u]:
+            cost[u] = w + cost[v]
+            d[u] = v
+bcost = {v: INF for v in V}
+p = {v: 0 for v in V}
+bcost[source] = 0
+for v in order:
+    for u, w in radj[v]:
+        if bcost[u] + w < bcost[v]:
+            bcost[v] = bcost[u] + w
+            p[v] = u
+print("FORWARD PASS (cost = min cost from vertex to sink)")
+for s in range(k, 0, -1):
+    print(f"stage:{s}")
+    for v in sorted(stages[s]):
+        print(f"Cost({s},{v}) = {cost[v]}")
+        print(f"parent({s},{v}) = {d[v]}")
+print("\nBACKWARD PASS (Bcost = min cost from source to vertex)")
+for s in range(1, k + 1):
+    print(f"stage:{s}")
+    for v in sorted(stages[s]):
+        print(f"Bcost({s},{v}) = {bcost[v]}")
+        print(f"parent({s},{v}) = {p[v]}")
+path = [source]
+v = source
+while v != sink:
+    v = d[v]
+    path.append(v)
+print("\nMinimum cost path:", " -> ".join(map(str, path)))
+print("Minimum cost:", cost[source])
