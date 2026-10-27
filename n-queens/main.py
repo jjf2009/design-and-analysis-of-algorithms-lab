@@ -2,7 +2,6 @@ count = 0
 
 
 def Place(x, k):
-    # Can a queen be placed in row k, column x[k]? Check earlier queens.
     for i in range(1, k):
         if x[i] == x[k] or abs(x[i] - x[k]) == abs(i - k):
             return False
@@ -18,7 +17,6 @@ def board(x, n):
 
 
 def NQueens(x, k, n):
-    # Backtracking: place a queen in each row k, trying every column.
     global count
     for col in range(1, n + 1):
         x[k] = col
