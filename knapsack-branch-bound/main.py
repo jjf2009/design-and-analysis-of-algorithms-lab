@@ -1,4 +1,5 @@
 import heapq
+import matplotlib.pyplot as plt
 
 
 class Node:
@@ -9,7 +10,7 @@ class Node:
         self.bound = bound      # upper bound on profit reachable below this node
         self.taken = taken      # list of chosen item indexes
 
-    # heapq is a min-heap; negate the bound so the highest bound is popped first
+    # heapq is a min-heap; reverse the comparison so the highest bound is popped first
     # (Least-Cost / best-first branch and bound).
     def __lt__(self, other):
         return self.bound > other.bound
@@ -73,16 +74,37 @@ def knapsack_bb(w, p, capacity, n):
     return max_profit, chosen
 
 
-if __name__ == "__main__":
-    print("Enter number of objects:")
-    n = int(input().strip())
-    print("Enter weights:")
-    w = list(map(float, input().strip().split()))
-    print("Enter profits:")
-    p = list(map(float, input().strip().split()))
-    print("Enter knapsack capacity:")
-    capacity = float(input().strip())
+def draw_solution(profit, weight, capacity, max_profit, chosen):
+    """Bar chart of item profits: green = in the knapsack, grey = left out."""
+    n = len(profit)
+    items = list(range(1, n + 1))
+    colors = ["#22c55e" if i in chosen else "#d1d5db" for i in items]
+    used = sum(weight[i - 1] for i in chosen)
 
-    profit, chosen = knapsack_bb(w, p, capacity, n)
-    print("\nMaximum profit:", profit)
-    print("Items selected (1-indexed):", chosen)
+    plt.figure(figsize=(8, 5))
+    bars = plt.bar(items, profit, color=colors, edgecolor="#1f2937")
+    for bar, i in zip(bars, items):
+        plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.8,
+                 f"w = {weight[i - 1]}", ha="center", fontsize=10)
+
+    plt.xticks(items, [f"Item {i}" for i in items])
+    plt.ylabel("Profit")
+    plt.title(f"0/1 Knapsack (Branch and Bound)\n"
+              f"Max profit = {max_profit}, weight used = {used}/{capacity}")
+    plt.ylim(0, max(profit) + 8)
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    profit = [39, 45, 12, 22, 25, 23]
+    weight = [3, 4, 2, 6, 7, 8]
+    M = 17
+    n = len(profit)
+
+    max_profit, chosen = knapsack_bb(weight, profit, M, n)
+    print(f"Maximum profit: {max_profit}")
+    print(f"Items chosen: {chosen}")
+    print(f"Total weight: {sum(weight[i - 1] for i in chosen)} / {M}")
+
+    draw_solution(profit, weight, M, max_profit, chosen)
